@@ -1205,8 +1205,10 @@ namespace Garnet.cluster
             var maxConfigEpoch = GetMaxConfigEpoch();
             var newWorkers = new Worker[workers.Length];
             Array.Copy(workers, newWorkers, workers.Length);
+            var now = DateTimeOffset.Now;
+            var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+            Console.WriteLine("[DEBUGGING] time"+ timestamp+" Bumping epoch for node with address: " + newWorkers[1].Address + " new epoch value: " + (maxConfigEpoch + 1)+ "old epoch value: "+ newWorkers[1].ConfigEpoch);
             newWorkers[1].ConfigEpoch = maxConfigEpoch + 1;
-            Console.WriteLine("Bumping epoch for node with address: " + newWorkers[1].Address + ", new epoch value: " + (maxConfigEpoch + 1));
             return new ClusterConfig(slotMap, newWorkers);
         }
 

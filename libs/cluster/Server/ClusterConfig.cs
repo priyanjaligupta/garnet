@@ -1228,11 +1228,12 @@ namespace Garnet.cluster
 
             //if localNodeId is smaller then do nothing
             if (localNodeId.CompareTo(remoteNodeId) <= 0) return this;
-
             var newWorkers = new Worker[workers.Length];
             Array.Copy(workers, newWorkers, workers.Length);
             newWorkers[1].ConfigEpoch++;
-            return new ClusterConfig(slotMap, newWorkers);
+            var newConfig=new ClusterConfig(slotMap, newWorkers);
+            Console.WriteLine("[DEBUGGING] Handling epoch collision for localNode: "+ localNodeId + " other node: "+ remoteNodeId+" newConfig: "+ newConfig);
+            return newConfig;
         }
     }
 }

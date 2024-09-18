@@ -481,7 +481,8 @@ namespace Garnet.cluster
                         setSlotsSucceeded = clusterProvider.clusterManager.TryPrepareSlotForMigration(slot, nodeId, out errorMessage);
                         break;
                     case SlotState.NODE:
-                        setSlotsSucceeded = clusterProvider.clusterManager.TryPrepareSlotForOwnershipChange(slot, nodeId, out errorMessage);
+                        var uid = Guid.NewGuid().ToString();
+                        setSlotsSucceeded = clusterProvider.clusterManager.TryPrepareSlotForOwnershipChange(slot, nodeId,uid, out errorMessage);
                         break;
                     default:
                         throw new InvalidOperationException($"Unexpected {nameof(SlotState)}: {slotState}");

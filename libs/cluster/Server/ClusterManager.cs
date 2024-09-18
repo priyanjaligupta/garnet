@@ -238,7 +238,7 @@ namespace Garnet.cluster
             while (true)
             {
                 var current = currentConfig;
-                var newConfig = currentConfig.BumpLocalNodeConfigEpoch();
+                var newConfig = currentConfig.BumpLocalNodeConfigEpoch("");
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }
@@ -255,7 +255,7 @@ namespace Garnet.cluster
             while (true)
             {
                 var current = currentConfig;
-                var newConfig = current.SetLocalWorkerRole(role).BumpLocalNodeConfigEpoch();
+                var newConfig = current.SetLocalWorkerRole(role).BumpLocalNodeConfigEpoch("");
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }
@@ -270,7 +270,7 @@ namespace Garnet.cluster
             while (true)
             {
                 var current = currentConfig;
-                var newConfig = current.MakeReplicaOf(null).SetLocalWorkerRole(NodeRole.PRIMARY).BumpLocalNodeConfigEpoch();
+                var newConfig = current.MakeReplicaOf(null).SetLocalWorkerRole(NodeRole.PRIMARY).BumpLocalNodeConfigEpoch("");
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }
@@ -305,7 +305,7 @@ namespace Garnet.cluster
                 if (!current.IsReplica || current.LocalNodePrimaryId == null)
                     return false;
 
-                var newConfig = current.TakeOverFromPrimary().BumpLocalNodeConfigEpoch();
+                var newConfig = current.TakeOverFromPrimary().BumpLocalNodeConfigEpoch("");
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }

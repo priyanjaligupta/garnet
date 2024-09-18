@@ -72,7 +72,7 @@ namespace Garnet.cluster
                     notLocalSlot = slot;
                     return false;
                 }
-                newConfig = newConfig.BumpLocalNodeConfigEpoch();
+                newConfig = newConfig.BumpLocalNodeConfigEpoch("");
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }
@@ -335,9 +335,10 @@ namespace Garnet.cluster
         /// </summary>
         /// <param name="slot">Slot list</param>
         /// <param name="nodeid">Importing source node-id</param>
+        /// <param name="uid"></param>
         /// <param name="errorMesage">Error message</param>
         /// <returns>True on success, false otherwise</returns>
-        public bool TryPrepareSlotForOwnershipChange(int slot, string nodeid, out ReadOnlySpan<byte> errorMesage)
+        public bool TryPrepareSlotForOwnershipChange(int slot, string nodeid, string uid, out ReadOnlySpan<byte> errorMesage)
         {
             errorMesage = default;
             var current = currentConfig;
@@ -375,14 +376,15 @@ namespace Garnet.cluster
                 {
                     current = currentConfig;
                     var newConfig = currentConfig.UpdateSlotState(slot, 1, SlotState.STABLE);
-                    newConfig = newConfig.BumpLocalNodeConfigEpoch();
+                    newConfig = newConfig.BumpLocalNodeConfigEpoch(uid);
                     //logging current and new config and epoch unix, uid
-                    var uid = Guid.NewGuid().ToString();
-                    var now = DateTimeOffset.Now;
-                    var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-                    logger?.LogTrace("[DEBUGGING]  Timestamp: {timestamp} UID: {uid}  newConfig: {newConfig} oldConfig: {currentConfig}",timestamp,uid ,newConfig, currentConfig );
-                    if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
+                    
+                    if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current){
+                        var now = DateTimeOffset.Now;
+                        var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+                        logger?.LogTrace("[DEBUGGING]  Timestamp: {timestamp} UID: {uid}  newConfig: {currentConfig} oldConfig: {newConfig}", timestamp, uid, currentConfig, newConfig );
                         break;
+                    }
                 }
                 FlushConfig();
                 logger?.LogTrace("[Processed] SetSlot NODE {slot} IMPORTED TO {nodeid}", slot, nodeid);
@@ -412,7 +414,7 @@ namespace Garnet.cluster
                 }
 
                 var newConfig = currentConfig.UpdateMultiSlotState(slots, workerId, SlotState.STABLE);
-                if (current.LocalNodeId.Equals(nodeid, StringComparison.OrdinalIgnoreCase)) newConfig = newConfig.BumpLocalNodeConfigEpoch();
+                if (current.LocalNodeId.Equals(nodeid, StringComparison.OrdinalIgnoreCase)) newConfig = newConfig.BumpLocalNodeConfigEpoch("");
           
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;

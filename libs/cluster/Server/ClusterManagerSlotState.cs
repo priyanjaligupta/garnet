@@ -376,7 +376,7 @@ namespace Garnet.cluster
                 {
                     current = currentConfig;
                     var newConfig = currentConfig.UpdateSlotState(slot, 1, SlotState.STABLE);
-                    newConfig = newConfig.BumpLocalNodeConfigEpoch(uid);
+                    newConfig = newConfig.BumpLocalNodeConfigEpoch(uid, logger);
                     //logging current and new config and epoch unix, uid
                     
                     if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current){

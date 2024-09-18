@@ -72,7 +72,7 @@ namespace Garnet.cluster
                     notLocalSlot = slot;
                     return false;
                 }
-                newConfig = newConfig.BumpLocalNodeConfigEpoch("");
+                newConfig = newConfig.BumpLocalNodeConfigEpoch();
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;
             }
@@ -414,7 +414,7 @@ namespace Garnet.cluster
                 }
 
                 var newConfig = currentConfig.UpdateMultiSlotState(slots, workerId, SlotState.STABLE);
-                if (current.LocalNodeId.Equals(nodeid, StringComparison.OrdinalIgnoreCase)) newConfig = newConfig.BumpLocalNodeConfigEpoch("");
+                if (current.LocalNodeId.Equals(nodeid, StringComparison.OrdinalIgnoreCase)) newConfig = newConfig.BumpLocalNodeConfigEpoch();
           
                 if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current)
                     break;

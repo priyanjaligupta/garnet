@@ -8,6 +8,7 @@ using System.Collections.Generic;
 #pragma warning restore IDE0005
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Garnet.cluster
 {
@@ -1200,7 +1201,7 @@ namespace Garnet.cluster
         /// Increment local config epoch without consensus
         /// </summary>
         /// <returns>ClusterConfig object with updates.</returns>
-        public ClusterConfig BumpLocalNodeConfigEpoch(string uid)
+        public ClusterConfig BumpLocalNodeConfigEpoch(string uid = "", ILogger logger = null)
         {
             var maxConfigEpoch = GetMaxConfigEpoch();
             var newWorkers = new Worker[workers.Length];
@@ -1208,10 +1209,14 @@ namespace Garnet.cluster
             Array.Copy(workers, newWorkers, workers.Length);
             newWorkers[1].ConfigEpoch = maxConfigEpoch + 1;
 
-            var now = DateTimeOffset.Now;
-            var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-            Console.WriteLine("[DEBUGGING] UID: "+uid+" time"+ timestamp+" Bumping epoch for node with address: " + newWorkers[1].Address + " new epoch value: " + newWorkers[1].ConfigEpoch+ "old epoch value: "+ oldEpoch);
-       
+            // Only log if the UID is not empty because uid will contain value only when slotownership is changed
+            if (!string.IsNullOrEmpty(uid))
+            {
+                var now = DateTimeOffset.Now;
+                var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
+
+                logger?.LogTrace($"[DEBUGGING] UID: {uid} time: {timestamp} Bumping epoch for node with address: {newWorkers[1].Address} new epoch value: {newWorkers[1].ConfigEpoch} old epoch value: {oldEpoch}");
+            }
             return new ClusterConfig(slotMap, newWorkers);
         }
 

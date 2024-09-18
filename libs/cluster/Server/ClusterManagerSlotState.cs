@@ -381,7 +381,7 @@ namespace Garnet.cluster
                         //logging current and new config and epoch unix, uid
                         var now = DateTimeOffset.Now;
                         var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-                        logger?.LogTrace("[DEBUGGING]  Timestamp: {timestamp} UID: {uid}  newConfig: {currentConfig} oldConfig: {newConfig}", timestamp, uid, currentConfig, newConfig );
+                        logger?.LogTrace("[DEBUGGING]  Timestamp: {timestamp} UID: {uid}  newConfig: {currentConfig} oldConfig: {current}", timestamp, uid, currentConfig, current );
                         break;
                     }
                 }

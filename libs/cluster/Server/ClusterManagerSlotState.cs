@@ -377,9 +377,8 @@ namespace Garnet.cluster
                     current = currentConfig;
                     var newConfig = currentConfig.UpdateSlotState(slot, 1, SlotState.STABLE);
                     newConfig = newConfig.BumpLocalNodeConfigEpoch(uid, logger);
-                    //logging current and new config and epoch unix, uid
-                    
                     if (Interlocked.CompareExchange(ref currentConfig, newConfig, current) == current){
+                        //logging current and new config and epoch unix, uid
                         var now = DateTimeOffset.Now;
                         var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
                         logger?.LogTrace("[DEBUGGING]  Timestamp: {timestamp} UID: {uid}  newConfig: {currentConfig} oldConfig: {newConfig}", timestamp, uid, currentConfig, newConfig );

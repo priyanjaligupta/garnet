@@ -1214,7 +1214,6 @@ namespace Garnet.cluster
             {
                 var now = DateTimeOffset.Now;
                 var timestamp = now.ToString("yyyy-MM-dd HH:mm:ss.fffffff");
-
                 logger?.LogTrace($"[DEBUGGING] UID: {uid} time: {timestamp} Bumping epoch for node with address: {newWorkers[1].Address} new epoch value: {newWorkers[1].ConfigEpoch} old epoch value: {oldEpoch}");
             }
             return new ClusterConfig(slotMap, newWorkers);
